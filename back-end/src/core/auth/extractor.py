@@ -25,9 +25,9 @@ class JwtTokenExtractor:
         if raw_token_str == "":
             raw_token_str = flask_request.headers.environ.get(
                 "HTTP_XAUTHORIZATION", "")
-            if raw_token_str == "":
-                raw_token_str = flask_request.headers.environ.get(
-                    "XAuthorization", "")
+        if raw_token_str == "":
+            raw_token_str = flask_request.headers.environ.get(
+                "XAuthorization", "")
 
         if not raw_token_str:
             raise jwt.InvalidTokenError(

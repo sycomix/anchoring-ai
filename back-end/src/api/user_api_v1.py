@@ -21,8 +21,7 @@ user_api_v1 = Blueprint('user_api_v1', __name__, url_prefix='/v1/user')
 @login_required
 def login_required_test():
     """Login required test."""
-    user = get_current_user()
-    if user:
+    if user := get_current_user():
         return response("The protected page is successfully accessed.")
     return response("Access the protected page failed.")
 

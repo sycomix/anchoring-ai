@@ -22,10 +22,14 @@ class TaskStatus(Enum):
     @staticmethod
     def get_key_from_value(value):
         """Get key from value."""
-        for key, member in TaskStatus.__members__.items():
-            if member.value == value:
-                return key
-        return None
+        return next(
+            (
+                key
+                for key, member in TaskStatus.__members__.items()
+                if member.value == value
+            ),
+            None,
+        )
 
 
 # pylint: disable=too-few-public-methods

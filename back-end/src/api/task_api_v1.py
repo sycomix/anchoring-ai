@@ -28,11 +28,8 @@ task_api_v1 = Blueprint('task_api_v1', __name__, url_prefix='/v1/task')
 
 
 def _adjust_action_list(action_list):
-    index = 1
-    for action in action_list:
+    for index, action in enumerate(action_list, start=1):
         action["name"] = action["title"]
-        index += 1
-
         if action["type"] in ApiType.values():
             action["model_provider"] = action["type"]
             action["type"] = "prompt"

@@ -14,9 +14,7 @@ class TextSplitter:
 
     def split_text(self, text):
         """Split text."""
-        chunk_list = self.text_splitter.split_text(text)
-
-        return chunk_list
+        return self.text_splitter.split_text(text)
 
     @staticmethod
     def check_params_dict(params_dict):

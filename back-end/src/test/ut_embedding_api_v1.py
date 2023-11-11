@@ -87,7 +87,9 @@ class TestTaskAPI(unittest.TestCase):
         while not success:
             time.sleep(1)
             response = self.client.get(
-                "/v1/embedding/status/{}".format(embedding_id), headers={"XAuthorization": self.token})
+                f"/v1/embedding/status/{embedding_id}",
+                headers={"XAuthorization": self.token},
+            )
             # Assert that the returned status code is 200
             self.assertEqual(200, response.status_code)
 
@@ -154,7 +156,9 @@ class TestTaskAPI(unittest.TestCase):
         time.sleep(5)
 
         response = self.client.get(
-            "/v1/embedding/stop/{}".format(embedding_id), headers={"XAuthorization": self.token})
+            f"/v1/embedding/stop/{embedding_id}",
+            headers={"XAuthorization": self.token},
+        )
         # Assert that the returned status code is 200
         self.assertEqual(200, response.status_code)
 
@@ -169,7 +173,9 @@ class TestTaskAPI(unittest.TestCase):
         file_id = "66dfc2df"
 
         response = self.client.get(
-            "/v1/embedding/list?created_by={}&file_id={}".format(created_by, file_id), headers={"XAuthorization": self.token})
+            f"/v1/embedding/list?created_by={created_by}&file_id={file_id}",
+            headers={"XAuthorization": self.token},
+        )
 
         # Assert that the returned status code is 200
         self.assertEqual(200, response.status_code)
@@ -181,7 +187,9 @@ class TestTaskAPI(unittest.TestCase):
         embedding_id = "0668f20d-e6bb-41f2-bffe-b836a2e253fd"
 
         response = self.client.delete(
-            "/v1/embedding/delete/{}".format(embedding_id), headers={"XAuthorization": self.token})
+            f"/v1/embedding/delete/{embedding_id}",
+            headers={"XAuthorization": self.token},
+        )
 
         # Assert that the returned status code is 200
         self.assertEqual(200, response.status_code)

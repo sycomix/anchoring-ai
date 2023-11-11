@@ -13,8 +13,7 @@ class QuotaService:
     @staticmethod
     def check_user_quota(user_id):
         """Check user quota."""
-        user_quota = DbUserQuota.query.filter_by(user_id=user_id).first()
-        if user_quota:
+        if user_quota := DbUserQuota.query.filter_by(user_id=user_id).first():
             return {
                 "quota_available": user_quota.quota_available,
                 "quota_used": user_quota.quota_used
@@ -26,8 +25,7 @@ class QuotaService:
     def update_user_quota(user_id, amount):
         """Update user quota."""
         try:
-            user_quota = DbUserQuota.query.filter_by(user_id=user_id).first()
-            if user_quota:
+            if user_quota := DbUserQuota.query.filter_by(user_id=user_id).first():
                 user_quota.update_quota(amount)
             else:
                 user_quota = DbUserQuota(

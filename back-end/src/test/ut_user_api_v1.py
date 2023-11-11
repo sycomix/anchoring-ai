@@ -82,10 +82,7 @@ class TestUserAPI(unittest.TestCase):
         resp = self.client.get(
             '/v1/user/apikey', headers={"XAuthorization": self.token})
         res = json.loads(resp.text)
-        exists = False
-        for ak in res['data']:
-            if ak == random_key:
-                exists = True
+        exists = any(ak == random_key for ak in res['data'])
         self.assertEqual(False, exists)
 
 

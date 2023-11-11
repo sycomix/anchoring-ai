@@ -108,7 +108,8 @@ class TestFileAPI(unittest.TestCase):
     def test_delete_file(self):
         file_id = "79652485"
         response = self.client.delete(
-            "/v1/file/delete/{}".format(file_id), headers={"XAuthorization": self.token})
+            f"/v1/file/delete/{file_id}", headers={"XAuthorization": self.token}
+        )
 
         # Assert that the returned status code is 200
         self.assertEqual(200, response.status_code)

@@ -22,15 +22,12 @@ def get_current_user_api_keys(t=None):
 def get_current_user_api_key_type_or_none(t):
     """Get current user API key type or None."""
     api_keys = get_current_user_api_keys(t)
-    if len(api_keys) == 0:
-        return None
-    return api_keys[-1]
+    return None if len(api_keys) == 0 else api_keys[-1]
 
 
 def get_current_user_api_key_type_or_public(t):
     """Get current user API key type or public."""
-    api_key = get_current_user_api_key_type_or_none(t)
-    if api_key:
+    if api_key := get_current_user_api_key_type_or_none(t):
         return api_key['api_key']
     elif t == "openai":
         return current_app.config.get("OPENAI_API_KEY")
@@ -53,6 +50,4 @@ def get_selected_user_api_key_type_or_none(t, user_id):
     """Get selected user API key type or none."""
     api_keys = DbUserApiKey.query.filter_by(user_id=user_id, api_type=t).all()
     api_keys = list(map(lambda x: x.as_dict(), api_keys))
-    if len(api_keys) == 0:
-        return None
-    return api_keys[-1]
+    return None if not api_keys else api_keys[-1]

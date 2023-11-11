@@ -167,9 +167,6 @@ def load_file(file_id):
         content_list = file_data_dict['content']
         df_content = pd.json_normalize(content_list)
         file_data_dict['content'] = df_content.to_json(orient='columns')
-    elif (file_data_dict['type'] == "Plain Text" or file_data_dict['type'] == "Embedded Text"):
-        pass
-
     return jsonify(success=True, file=file_data_dict)
 
 

@@ -300,7 +300,9 @@ class TestTaskAPI(unittest.TestCase):
             time.sleep(1)
             # res = requests.get("http://127.0.0.1:5001/v1/task/batch_task_status/{}".format(task_id)).json()
             response = self.client.get(
-                "/v1/task/status/{}".format(task_id), headers={"XAuthorization": self.token})
+                f"/v1/task/status/{task_id}",
+                headers={"XAuthorization": self.token},
+            )
             # Assert that the returned status code is 200
             self.assertEqual(200, response.status_code)
 
@@ -317,7 +319,8 @@ class TestTaskAPI(unittest.TestCase):
 
         # res = requests.get("http://127.0.0.1:5001/v1/task/batch_task_result/{}".format(task_id)).json()
         response = self.client.get(
-            "/v1/task/load/{}".format(task_id), headers={"XAuthorization": self.token})
+            f"/v1/task/load/{task_id}", headers={"XAuthorization": self.token}
+        )
         # Assert that the returned status code is 200
         self.assertEqual(200, response.status_code)
 
@@ -347,7 +350,7 @@ class TestTaskAPI(unittest.TestCase):
         time.sleep(5)
 
         # res = requests.get("http://127.0.0.1:5001/v1/task/stop_task/{}".format(task_id)).json()
-        response = self.client.get("/v1/task/stop/{}".format(task_id))
+        response = self.client.get(f"/v1/task/stop/{task_id}")
         # Assert that the returned status code is 200
         self.assertEqual(200, response.status_code)
 
@@ -363,9 +366,9 @@ class TestTaskAPI(unittest.TestCase):
         file_id = "2834a1eg"
 
         response = self.client.get(
-            "/v1/task/list?created_by={}&app_id={}&file_id={}".format(
-                created_by, app_id, file_id),
-            headers={"XAuthorization": self.token})
+            f"/v1/task/list?created_by={created_by}&app_id={app_id}&file_id={file_id}",
+            headers={"XAuthorization": self.token},
+        )
 
         # Assert that the returned status code is 200
         self.assertEqual(200, response.status_code)
@@ -377,7 +380,8 @@ class TestTaskAPI(unittest.TestCase):
         task_id = '07e2ab41-ca9f-4fd0-85a1-4973fd2b25ae'
 
         response = self.client.delete(
-            "/v1/task/delete/{}".format(task_id), headers={"XAuthorization": self.token})
+            f"/v1/task/delete/{task_id}", headers={"XAuthorization": self.token}
+        )
 
         # Assert that the returned status code is 200
         self.assertEqual(200, response.status_code)

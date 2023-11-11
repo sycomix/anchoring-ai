@@ -61,9 +61,7 @@ class Chain:
             input_variables = {}
 
         chain_outputs = {}
-        count = 1
-
-        for action in self.action_list:
+        for count, action in enumerate(self.action_list, start=1):
             logger.debug(f"Chain Action {count} Start")
             if action["type"] == "table":
                 res = action["object"].load_variables(
@@ -132,6 +130,4 @@ class Chain:
                     chain_outputs[name] = res
 
             logger.debug(f"Chain action {count} completed")
-            count += 1
-
         return chain_outputs
