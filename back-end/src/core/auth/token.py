@@ -41,12 +41,11 @@ class JwtToken:
             expire_timespan_sec: float = EXPIRE_TIMESPAN_SEC,
             version: int = 0,
     ):
-        token = cls(user_id=user_id,
-                    expire_timestamp=get_future_timestamp(
-                        secs=expire_timespan_sec),
-                    version=version)
-
-        return token
+        return cls(
+            user_id=user_id,
+            expire_timestamp=get_future_timestamp(secs=expire_timespan_sec),
+            version=version,
+        )
 
     def to_str(self) -> str:
         # use abbreviation for shorter payload
@@ -76,8 +75,7 @@ class JwtToken:
         for necessary_field in ["u", "exp", "vs"]:
             if necessary_field not in payload_dict:
                 raise jwt.InvalidTokenError(
-                    "payload dict has no required field {}".format(
-                        necessary_field)
+                    f"payload dict has no required field {necessary_field}"
                 )
         if has_passed_timestamp(float(payload_dict["exp"])):
             raise jwt.ExpiredSignatureError("token has expired")

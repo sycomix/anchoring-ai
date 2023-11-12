@@ -64,5 +64,4 @@ class VectorStoreLanceDB:
     def similarity_search(self, query, k=3):
         """Similarity search."""
         docs = self.vec_db.similarity_search(query, k=k)
-        text_list = [doc.page_content for doc in docs]
-        return text_list
+        return [doc.page_content for doc in docs]

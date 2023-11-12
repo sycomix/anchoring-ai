@@ -168,7 +168,9 @@ class TestAppAPI(unittest.TestCase):
     def test_load_app(self):
         if self.__class__.app_id is not None:  # Check if app_id was set
             response = self.client.get(
-                "/v1/app/load/{}".format(self.__class__.app_id), headers={"XAuthorization": self.token})
+                f"/v1/app/load/{self.__class__.app_id}",
+                headers={"XAuthorization": self.token},
+            )
             self.assertEqual(200, response.status_code)
 
             res = json.loads(response.data.decode('utf-8'))
@@ -177,7 +179,9 @@ class TestAppAPI(unittest.TestCase):
     def test_delete_app(self):
         if self.__class__.app_id is not None:  # Check if app_id was set
             response = self.client.delete(
-                "/v1/app/delete/{}".format(self.__class__.app_id), headers={"XAuthorization": self.token})
+                f"/v1/app/delete/{self.__class__.app_id}",
+                headers={"XAuthorization": self.token},
+            )
             self.assertEqual(200, response.status_code)
 
             res = json.loads(response.data.decode('utf-8'))

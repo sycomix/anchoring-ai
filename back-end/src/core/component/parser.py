@@ -6,7 +6,7 @@ from config import logger
 
 # Helper function to make the tag case-insensitive
 def make_case_insensitive(tag):
-    return ''.join(['[{}{}]'.format(c.lower(), c.upper()) for c in tag])
+    return ''.join([f'[{c.lower()}{c.upper()}]' for c in tag])
 
 
 # pylint: disable=too-few-public-methods
@@ -19,13 +19,11 @@ class TagParser:
     def _construct_tag_parser(self, output_key):
         # Make the tag case-insensitive
         tag_insensitive = make_case_insensitive(self.tag)
-        
-        # Create a RegexParser with the case-insensitive and multiline regex
-        parser = RegexParser(
-            regex=fr"<\s*{tag_insensitive}\s*>([\s\S]*?)<\s*/{tag_insensitive}\s*>",
-            output_keys=[output_key])
 
-        return parser
+        return RegexParser(
+            regex=fr"<\s*{tag_insensitive}\s*>([\s\S]*?)<\s*/{tag_insensitive}\s*>",
+            output_keys=[output_key],
+        )
 
     def parse(self, text_obj, input_variables=None):
         """Parse."""

@@ -47,10 +47,9 @@ def get_app_list():
     )
 
     if app_name is not None:
-        query = query.filter(DbAppBuild.app_name.like('%' + app_name + '%'))
+        query = query.filter(DbAppBuild.app_name.like(f'%{app_name}%'))
     if created_by is not None:
-        query = query.filter(
-            DbAppBuild.created_by.like('%' + created_by + '%'))
+        query = query.filter(DbAppBuild.created_by.like(f'%{created_by}%'))
     if tags is not None:
         tag_list = tags.split(",")
         query = query.filter(DbAppBuild.tags.in_(tag_list))
@@ -79,11 +78,12 @@ def get_app_list():
 @login_required
 def get_application(app_id):
     """Get application."""
-    app_build = DbAppBuild.query.filter(
-        DbAppBuild.id == app_id, DbAppBuild.deleted_at.is_(None),
-        (DbAppBuild.created_by == g.current_user_id) |
-        (DbAppBuild.published.is_(True))).first()
-    if app_build:
+    if app_build := DbAppBuild.query.filter(
+        DbAppBuild.id == app_id,
+        DbAppBuild.deleted_at.is_(None),
+        (DbAppBuild.created_by == g.current_user_id)
+        | (DbAppBuild.published.is_(True)),
+    ).first():
         # app_dict = {
         #     "id": app_build.id,
         #     "app_name": app_build.app_name,

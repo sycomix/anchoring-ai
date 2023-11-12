@@ -30,16 +30,14 @@ from config import logger
 def text_convert(text_template, input_variables=None):
     """Text convert."""
     text_obj = Text(text_template)
-    res = text_obj.text_convert(input_variables)
-    return res
+    return text_obj.text_convert(input_variables)
 
 
 def tag_parse(tag, text_template, input_variables=None):
     """Tag parse."""
     parser_obj = TagParser(tag)
     text_obj = Text(text_template)
-    res = parser_obj.parse(text_obj, input_variables)
-    return res
+    return parser_obj.parse(text_obj, input_variables)
 
 
 def google_search(text_template, llm_api_key_dict=None, num_results=3, input_variables=None):
@@ -47,17 +45,14 @@ def google_search(text_template, llm_api_key_dict=None, num_results=3, input_var
     text_obj = Text(text_template)
 
     google_search_obj = GoogleSearch(llm_api_key_dict, num_results)
-    res = google_search_obj.search(text_obj, input_variables)
-
-    return res
+    return google_search_obj.search(text_obj, input_variables)
 
 
 def youtube_transcript(text_template, input_variables=None):
     """YouTube transcript."""
     text_obj = Text(text_template)
     youtube_transcript_obj = YouTubeTranscript()
-    res = youtube_transcript_obj.get_transcript(text_obj, input_variables)
-    return res
+    return youtube_transcript_obj.get_transcript(text_obj, input_variables)
 
 
 def select_llm_processor(model_provider, params_dict, llm_api_key_dict):
@@ -98,9 +93,7 @@ def complete(prompt,
         return None
 
     prompt_obj = Prompt(llm_processor, prompt)
-    res = prompt_obj.complete(input_variables)
-
-    return res
+    return prompt_obj.complete(input_variables)
 
 
 def select_doc_transformer(doc_transformer_type, params_dict):
@@ -165,10 +158,7 @@ def load_vector_store(embedding_id, llm_api_key_dict):
     vector_store = select_vector_store(
         vector_store_provider, vector_store_params_dict)
 
-    if vector_store is None:
-        return None
-
-    return vector_store
+    return None if vector_store is None else vector_store
 
 
 def load_chain(action_list, llm_api_key_dict=None):
@@ -243,12 +233,7 @@ def run_chain(action_list, input_variables=None, llm_api_key_dict=None):
     """Run chain."""
     chain_obj = load_chain(action_list, llm_api_key_dict=llm_api_key_dict)
 
-    if chain_obj is None:
-        return None
-
-    res = chain_obj.run(input_variables)
-
-    return res
+    return None if chain_obj is None else chain_obj.run(input_variables)
 
 
 class InsufficientQuotaException(Exception):
@@ -277,7 +262,7 @@ def batch_task(action_list, input_variables, table_list, task_name, created_by, 
         chain_obj = load_chain(action_list, llm_api_key_dict=llm_api_key_dict)
     except Exception as e:
         task_build.status = TaskStatus.FAILED.value
-        task_build.message = {"message": "application load failure. " + str(e)}
+        task_build.message = {"message": f"application load failure. {str(e)}"}
         task_build.completed_at = datetime.datetime.utcnow()
         db.session.commit()
         return
@@ -330,11 +315,7 @@ def batch_task(action_list, input_variables, table_list, task_name, created_by, 
         db.session.rollback()
         task_build.status = TaskStatus.FAILED.value
 
-        if isinstance(e, InsufficientQuotaException):
-            task_build.message = {"message": str(e)}
-        else:
-            task_build.message = {"message": str(e)}
-
+        task_build.message = {"message": str(e)}
         task_build.completed_at = datetime.datetime.utcnow()
         db.session.commit()
         return {"error": str(e)}
@@ -344,11 +325,17 @@ def start_batch_task(action_list, input_variables, table_list, task_name, create
                      app_id, file_id,
                      llm_api_key_dict=None):
     """Start batch task."""
-    task = batch_task.delay(action_list, input_variables, table_list, task_name,
-                            created_by, created_at, app_id, file_id,
-                            llm_api_key_dict=llm_api_key_dict)
-
-    if task:
+    if task := batch_task.delay(
+        action_list,
+        input_variables,
+        table_list,
+        task_name,
+        created_by,
+        created_at,
+        app_id,
+        file_id,
+        llm_api_key_dict=llm_api_key_dict,
+    ):
         return task.id
 
     return None
@@ -374,7 +361,8 @@ def embedding_task(doc_transformer_type, doc_transformer_params_dict, embedding_
     except Exception as e:
         embedding_build.status = TaskStatus.FAILED.value
         embedding_build.message = {
-            "message": "doc_transformer load failure. " + str(e)}
+            "message": f"doc_transformer load failure. {str(e)}"
+        }
         embedding_build.completed_at = datetime.datetime.utcnow()
         db.session.commit()
         return
@@ -392,7 +380,8 @@ def embedding_task(doc_transformer_type, doc_transformer_params_dict, embedding_
     except Exception as e:
         embedding_build.status = TaskStatus.FAILED.value
         embedding_build.message = {
-            "message": "embedding_model load failure. " + str(e)}
+            "message": f"embedding_model load failure. {str(e)}"
+        }
         embedding_build.completed_at = datetime.datetime.utcnow()
         db.session.commit()
         return
@@ -410,8 +399,7 @@ def embedding_task(doc_transformer_type, doc_transformer_params_dict, embedding_
             vector_store_provider, vector_store_params_dict)
     except Exception as e:
         embedding_build.status = TaskStatus.FAILED.value
-        embedding_build.message = {
-            "message": "vector_store load failure. " + str(e)}
+        embedding_build.message = {"message": f"vector_store load failure. {str(e)}"}
         embedding_build.completed_at = datetime.datetime.utcnow()
         db.session.commit()
         return
@@ -483,14 +471,20 @@ def start_embedding_task(doc_transformer_type, doc_transformer_params_dict,
                          vector_store_params_dict, text,
                          embedding_name, created_by, file_id, llm_api_key_dict, embedding_config):
     """Start embedding task."""
-    task = embedding_task.delay(doc_transformer_type, doc_transformer_params_dict,
-                                embedding_model_provider,
-                                embedding_model_params_dict, vector_store_provider,
-                                vector_store_params_dict, text,
-                                embedding_name, created_by, file_id,
-                                llm_api_key_dict, embedding_config)
-
-    if task:
+    if task := embedding_task.delay(
+        doc_transformer_type,
+        doc_transformer_params_dict,
+        embedding_model_provider,
+        embedding_model_params_dict,
+        vector_store_provider,
+        vector_store_params_dict,
+        text,
+        embedding_name,
+        created_by,
+        file_id,
+        llm_api_key_dict,
+        embedding_config,
+    ):
         return task.id
 
     return None
@@ -507,6 +501,4 @@ def doc_search(embedding_id, text_template, params_dict, llm_api_key_dict, input
 
     doc_search_obj = DocSearch(vector_store, text_template, top_n)
 
-    res = doc_search_obj.search(input_variables=input_variables)
-
-    return res
+    return doc_search_obj.search(input_variables=input_variables)

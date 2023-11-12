@@ -11,13 +11,11 @@ class Table:
 
     def load_variables(self, input_variables=None):
         """Load variables."""
-        result = {}
-
         if input_variables is None:
             return None
 
-        for variable in input_variables:
-            if variable in self.scheme:
-                result[variable] = input_variables[variable]
-
-        return result
+        return {
+            variable: input_variables[variable]
+            for variable in input_variables
+            if variable in self.scheme
+        }

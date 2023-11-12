@@ -21,13 +21,11 @@ class GoogleSearch:
         """Construct a Tool object for Google Search."""
         search = GoogleSearchAPIWrapper(google_api_key=self.api_key, google_cse_id=self.cse_id, k=self.num_results)
 
-        tool = Tool(
+        return Tool(
             name="Google Search",
             description="Search Google for recent results.",
             func=search.run,
         )
-
-        return tool
 
     def search(self, text_obj, input_variables=None):
         """Execute a Google Search."""
